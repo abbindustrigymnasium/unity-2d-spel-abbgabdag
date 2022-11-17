@@ -2,23 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEditor;
+using UnityEditor.Tilemaps;
 using UnityEngine;
 using UnityEngine.Rendering;
 
 public class Enemy1Controller : MonoBehaviour
 {
+    [SerializeField] private LayerMask groundCheck;
 
     //Enemy stats
     private int maxHealth;
     private int currentHealth;
     private float cooldownTimer;
-
     [SerializeField] private float attackDelay;
     [SerializeField] private int playerDamage;
     [SerializeField] private float attackRange;
     [SerializeField] private float colDistance;
 
-    //Enemy animation controll
+    //Enemy animations
+
     public Animator anim;
     private float destroyDelay;
     public string currentAnim;
@@ -28,16 +30,16 @@ public class Enemy1Controller : MonoBehaviour
     [SerializeField] private BoxCollider2D boxCol;
     [SerializeField] private LayerMask playerLayer;
 
-    private EnemyAI enemyAi;
+    private EnemyAI enemyPatrol;
     private SamuraiController playerhealth;
 
 
- 
+
     private void Awake()
     {
 
         anim = GetComponent<Animator>();
-        enemyAi = GetComponentInParent<EnemyAI>();
+        enemyPatrol = GetComponentInParent<EnemyAI>();
 
         maxHealth = 100;
         currentHealth = maxHealth;
@@ -53,9 +55,9 @@ public class Enemy1Controller : MonoBehaviour
     private void Update()
     {
         cooldownTimer += Time.deltaTime;
-       
         if (PlayerInSight())
-        { 
+        {
+
             if (cooldownTimer >= attackDelay)
             {
                 cooldownTimer = 0f;
@@ -63,22 +65,20 @@ public class Enemy1Controller : MonoBehaviour
             }
         }
 
-        if (enemyAi != null)
-            enemyAi.enabled = !PlayerInSight();
+        if (enemyPatrol != null)
+            enemyPatrol.enabled = !PlayerInSight();
     }
 
-    
+
     //Other functions
 
     private bool PlayerInSight()
     {
-        RaycastHit2D hit = Physics2D.BoxCast(boxCol.bounds.center + transform.right * attackRange * transform.localScale.x * colDistance, 
-                                                new Vector3(boxCol.bounds.size.x * attackRange, boxCol.bounds.size.y, boxCol.bounds.size.y),
-                                                0, Vector2.left, 0, playerLayer);
-        if(hit.collider != null)
+        RaycastHit2D hit = Physics2D.BoxCast(boxCol.bounds.center + transform.right * attackRange * transform.localScale.x * colDistance, new Vector3(boxCol.bounds.size.x * attackRange, boxCol.bounds.size.y, boxCol.bounds.size.z), 0f, Vector2.left, 0f, playerLayer);
+
+        if (hit.collider != null)
         {
             playerhealth = hit.transform.GetComponent<SamuraiController>();
-            Debug.Log("bla");
         }
 
         return hit.collider != null;
@@ -95,7 +95,7 @@ public class Enemy1Controller : MonoBehaviour
         currentHealth -= damage;
         anim.SetTrigger("TakeHit");
 
-        if(currentHealth <= 0)
+        if (currentHealth <= 0)
         {
             Die();
         }
@@ -103,17 +103,17 @@ public class Enemy1Controller : MonoBehaviour
 
     private void DamagePlayer()
     {
-        if(PlayerInSight())
+        if (PlayerInSight())
         {
             playerhealth.PlayerTakeDamage(playerDamage);
         }
-     
+
     }
 
     void Die()
     {
         GetComponent<Collider2D>().enabled = false;
-        this.enabled = true;
+        this.enabled = false;
         PlayAnimDestroy();
         Destroy(gameObject, destroyDelay);
     }
@@ -129,4 +129,4 @@ public class Enemy1Controller : MonoBehaviour
         gameObject.transform.localScale = currentScale;
         facingRight = !facingRight;
     }
-} 
+}

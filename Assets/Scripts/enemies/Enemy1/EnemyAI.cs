@@ -11,7 +11,7 @@ public class EnemyAI : MonoBehaviour
 
 
     [Header("Enemy")]
-    private Transform enemyPos;
+    [SerializeField] private Transform enemy;
 
 
     [Header("Movement params")]
@@ -23,19 +23,19 @@ public class EnemyAI : MonoBehaviour
 
     private void Awake()
     {
-        initScale = enemyPos.localScale;   
+        initScale = enemy.localScale;
         moveSpeed = 4;
     }
     private void OnDisable()
     {
-        StopMoving();
+        anim.SetBool("Moving", false);
     }
 
     private void Update()
     {
         if (movingLeft)
         {
-            if(enemyPos.position.x >= leftEdge.position.x) 
+            if (enemy.position.x >= leftEdge.position.x)
             {
                 MoveInDir(-1);
             }
@@ -43,10 +43,11 @@ public class EnemyAI : MonoBehaviour
             {
                 DirChange();
             }
+
         }
-        else if(!movingLeft)
+        else
         {
-            if(enemyPos.position.x <= rightEdge.position.x )
+            if (enemy.position.x <= rightEdge.position.x)
             {
                 MoveInDir(1);
             }
@@ -56,22 +57,17 @@ public class EnemyAI : MonoBehaviour
             }
         }
     }
-    private void MoveInDir(int dir) 
+    private void MoveInDir(int dir)
     {
         anim.SetBool("Moving", true);
-        enemyPos.localScale = new Vector3(Mathf.Abs(initScale.x) * dir, initScale.y, initScale.z);
-        enemyPos.position = new Vector3(enemyPos.position.x + Time.deltaTime * dir * moveSpeed, enemyPos.position.y, enemyPos.position.z);
+        enemy.localScale = new Vector3(Mathf.Abs(initScale.x) * dir, initScale.y, initScale.z);
+        enemy.position = new Vector3(enemy.position.x + Time.deltaTime * dir * moveSpeed, enemy.position.y, enemy.position.z);
     }
 
     private void DirChange()
     {
         anim.SetBool("Moving", false);
         movingLeft = !movingLeft;
-    }
-
-    private void StopMoving()
-    {
-        anim.SetBool("Moving", false);
     }
 
 }

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2018365450437254146}
   - component: {fileID: 1515793881361588757}
   - component: {fileID: 2213089068918022443}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: PF Village Props - Barrel
   m_TagString: Untagged
   m_Icon: {fileID: 0}

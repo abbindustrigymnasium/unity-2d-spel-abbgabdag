@@ -167,8 +167,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63faaeb3f5acc4a419cb2d1f89c3caaf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  platformLayerMask:
+  platformLayer:
     serializedVersion: 2
     m_Bits: 64
+  enemyLayers:
+    serializedVersion: 2
+    m_Bits: 128
   jumpForce: 0
   moveSpeed: 500
+  attackDmg: 0
+  attackRange: 0.9
+  attackPoint: {fileID: 8777528217059245301, guid: c6cb24741dff0734095e2e58b6d0b617, type: 3}
+  anim: {fileID: 6996194895589906533}
+  currentAnim: 
